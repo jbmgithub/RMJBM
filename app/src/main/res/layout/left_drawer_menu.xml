@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerColor" />
+
+            <LinearLayout
+                android:id="@+id/llLDMMaterialStaging"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/nav_item_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/pad_10dp"
+                    android:src="@drawable/ic_material_staging_24" />
+
+                <TextView
+                    android:id="@+id/tvLDMMaterialStaging"
+                    style="@style/navItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/material_staging" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerColor" />
+
+            <LinearLayout
+                android:id="@+id/llLDMStockView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/nav_item_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="@dimen/pad_10dp"
+                    android:paddingRight="@dimen/pad_10dp"
+                    android:src="@drawable/ic_stock_view_24" />
+
+                <TextView
+                    android:id="@+id/tvLDMStockView"
+                    style="@style/navItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stock_view" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerColor" />
+
+            <LinearLayout
+                android:id="@+id/llLDMPhysicalInventory"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/nav_item_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/pad_10dp"
+                    android:src="@drawable/ic_physical_inventory_24" />
+
+                <TextView
+                    android:id="@+id/tvLDMPhysicalInventory"
+                    style="@style/navItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/physical_inventory" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerColor" />
+
+            <LinearLayout
+                android:id="@+id/llLDMContactUs"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/nav_item_height"
+                android:visibility="gone"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/pad_10dp"
+                    android:src="@drawable/ic_contact_us_24" />
+
+                <TextView
+                    android:id="@+id/tvLDMContactUs"
+                    style="@style/navItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_us" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerColor" />
+
+            <LinearLayout
+                android:id="@+id/llLDMVersion"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/nav_item_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/pad_10dp"
+                    android:src="@drawable/ic_app_version_24" />
+
+                <TextView
+                    android:id="@+id/tvLDMVersion"
+                    style="@style/navItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_version" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerColor" />
+
+            <LinearLayout
+                android:id="@+id/llLDMLogout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/nav_item_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/pad_10dp"
+                    android:src="@drawable/ic_logout_24" />
+
+                <TextView
+                    android:id="@+id/tvLDMLogout"
+                    style="@style/navItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/logout" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerColor" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

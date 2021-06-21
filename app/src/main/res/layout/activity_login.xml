@@ -1,0 +1,346 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login"
+    tools:context=".activity.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/margin_15dp"
+            android:layout_marginRight="@dimen/margin_15dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ll_bg"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/pad_20dp"
+                        android:paddingBottom="@dimen/pad_10dp">
+
+                        <ImageView
+                            android:layout_width="150dp"
+                            android:layout_height="100dp"
+                            android:background="@drawable/barcode_scanner"
+                            android:scaleType="fitXY" />
+
+                        <TextView
+                            android:id="@+id/tvALLoginToContinue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:padding="@dimen/pad_10dp"
+                            android:text="@string/login_to_continue"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blackColor"
+                            android:textSize="@dimen/text_20sp" />
+
+                        <LinearLayout
+                            android:id="@+id/llALServerDetail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/pad_5dp"
+                            android:background="@drawable/btn_selector_reset"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="@dimen/margin_5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvALServerIP"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="0.4"
+                                    android:gravity="center|end"
+                                    android:padding="@dimen/pad_3dp"
+                                    android:text="@string/hint_server_ip"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_14sp" />
+
+                                <EditText
+                                    android:id="@+id/etALServerIP"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_bg"
+                                    android:digits="0123456789."
+                                    android:inputType="number|numberDecimal|numberPassword"
+                                    android:singleLine="true"
+                                    android:text="@string/server_ip"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_16sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvALSAPUser"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="0.4"
+                                    android:gravity="center|end"
+                                    android:padding="@dimen/pad_3dp"
+                                    android:text="@string/hint_sap_user"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_14sp" />
+
+                                <EditText
+                                    android:id="@+id/etALSapUser"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_bg"
+                                    android:inputType="textPassword"
+                                    android:singleLine="true"
+                                    android:text="@string/sap_user"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_16sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvALSAPPassword"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="0.4"
+                                    android:gravity="center|end"
+                                    android:padding="@dimen/pad_3dp"
+                                    android:text="@string/hint_sap_password"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_14sp" />
+
+                                <EditText
+                                    android:id="@+id/etALSapPassword"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_bg"
+                                    android:inputType="textPassword"
+                                    android:singleLine="true"
+                                    android:text="@string/sap_password"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_16sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_5dp"
+                                android:layout_marginBottom="@dimen/margin_5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvALTimeout"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="0.4"
+                                    android:gravity="center|end"
+                                    android:padding="@dimen/pad_3dp"
+                                    android:text="@string/hint_timeout"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_14sp" />
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_bg"
+                                    android:orientation="vertical">
+
+                                    <Spinner
+                                        android:id="@+id/spALTimeout"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:drawSelectorOnTop="true"
+                                        android:gravity="right"
+                                        android:textColor="@android:color/white" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/llALDetail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingBottom="@dimen/pad_5dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvALUserID"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="0.4"
+                                    android:gravity="center|end"
+                                    android:padding="@dimen/pad_3dp"
+                                    android:text="@string/hint_user_id"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_14sp" />
+
+                                <EditText
+                                    android:id="@+id/etALUserID"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_bg"
+                                    android:singleLine="true"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_16sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvALPassword"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="0.4"
+                                    android:gravity="center|end"
+                                    android:padding="@dimen/pad_3dp"
+                                    android:text="@string/hint_password"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_14sp" />
+
+
+                                <EditText
+                                    android:id="@+id/etALPassword"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_bg"
+                                    android:inputType="textPassword"
+                                    android:singleLine="true"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_16sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvALPlant"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="0.4"
+                                    android:gravity="center|end"
+                                    android:padding="@dimen/pad_3dp"
+                                    android:text="@string/hint_plant"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_14sp" />
+
+                                <EditText
+                                    android:id="@+id/etALPlant"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="@dimen/margin_5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/edt_bg"
+                                    android:inputType="numberSigned"
+                                    android:maxLength="4"
+                                    android:singleLine="true"
+                                    android:text="@string/plat_code"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="@dimen/text_16sp" />
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_8dp"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/btnALResetServerDetail"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/margin_8dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/btn_selector_reset"
+                                android:text="@string/btn_reset_server_detail"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="@dimen/text_12sp" />
+
+                            <Button
+                                android:id="@+id/btnALLogin"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/margin_8dp"
+                                android:layout_weight="0.7"
+                                android:background="@drawable/btn_selector"
+                                android:text="@string/btn_login"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="@dimen/text_16sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

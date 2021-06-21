@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grayColor"
+    tools:context=".activity.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/pad_5dp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ll_bg_black"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/pad_5dp">
+
+                        <TextView
+                            android:id="@+id/tvFSVStoreLocH"
+                            style="@style/homeItem"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.4"
+                            android:gravity="center|left"
+                            android:text="@string/store_loc"
+                            android:textColor="@color/whiteColor" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/sp_background"
+                            android:orientation="horizontal"
+                            tools:ignore="UselessParent">
+
+                            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                                android:id="@+id/spFSVStoreLoc"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:overlapAnchor="false"
+                                android:spinnerMode="dropdown" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/pad_5dp">
+
+                        <TextView
+                            android:id="@+id/tvFSVBarcodeH"
+                            style="@style/homeItem"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.4"
+                            android:gravity="center|left"
+                            android:text="@string/barcode"
+                            android:textColor="@color/whiteColor" />
+
+                        <EditText
+                            android:id="@+id/etFSVBarcode"
+                            style="@style/homeItem"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/edt_bg"
+                            android:cursorVisible="false"
+                            android:textColor="@color/blackColor" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llFSVDataView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_15dp"
+                    android:background="@drawable/ll_bg"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_3dp">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvFSVMaterialNoH"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.4"
+                                android:background="@drawable/cell_shape"
+                                android:padding="@dimen/pad_5dp"
+                                android:text="@string/material_no"
+                                android:textColor="#000" />
+
+                            <TextView
+                                android:id="@+id/tvFSVMaterialNo"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:padding="@dimen/pad_5dp"
+                                android:textColor="@color/blackColor" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvFSVMaterialDescH"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.4"
+                                android:background="@drawable/cell_shape"
+                                android:padding="@dimen/pad_5dp"
+                                android:text="@string/material_desc"
+                                android:textColor="#000" />
+
+                            <TextView
+                                android:id="@+id/tvFSVMaterialDesc"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:padding="@dimen/pad_5dp"
+                                android:textColor="@color/blackColor" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvFSVTotalStocksH"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.4"
+                                android:background="@drawable/cell_shape"
+                                android:padding="@dimen/pad_5dp"
+                                android:text="@string/total_stocks"
+                                android:textColor="#000" />
+
+                            <TextView
+                                android:id="@+id/tvFSVTotalStocks"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:padding="@dimen/pad_5dp"
+                                android:textColor="@color/blackColor" />
+                        </TableRow>
+
+                    </TableLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llFSVListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/margin_15dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_3dp">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/tvFSVStoreLocT"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.4"
+                                android:background="@drawable/cell_shape_two"
+                                android:padding="@dimen/pad_5dp"
+                                android:text="@string/store_loc"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="@dimen/text_18sp" />
+
+                            <TextView
+                                android:id="@+id/tvFSVBatchNumberT"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.6"
+                                android:background="@drawable/cell_shape_two"
+                                android:padding="@dimen/pad_5dp"
+                                android:text="@string/batch_number"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="@dimen/text_18sp" />
+
+                            <TextView
+                                android:id="@+id/tvFSVStockT"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.3"
+                                android:background="@drawable/cell_shape_two"
+                                android:padding="@dimen/pad_5dp"
+                                android:text="@string/stock"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="@dimen/text_18sp" />
+
+                        </TableRow>
+                    </TableLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvFSVRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/margin_3dp"
+                        android:layout_weight="1"
+                        android:scrollbars="vertical" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
