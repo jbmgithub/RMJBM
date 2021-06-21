@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SpTimeoutAdapter timeoutAdapter;
     private Typeface robotoRegular, robotoBold, robotoItalic;
     private InputFilter[] filters;
-
+int a;
     private ProgressDialog pd;
     private SessionManagement session;
     private int count = 0;
@@ -72,8 +72,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 pd.dismiss();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
-            } else if (msg.what == 1) {
-            } else if (msg.what == 2) {
             }
             return false;
         }
