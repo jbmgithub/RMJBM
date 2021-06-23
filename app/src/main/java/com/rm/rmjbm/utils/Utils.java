@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Base64;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.inputmethod.InputMethodManager;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.text.DecimalFormat;
@@ -31,6 +33,17 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
+
+    public static String getAuthToken() {
+        byte[] data = new byte[0];
+        try {
+            data = (URLs.TAG_USER + ":" + URLs.TAG_PASSWORD).getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "Basic " + Base64.encodeToString(data, Base64.NO_WRAP);
+    }
+
 
     public static void showCustomToast(String message, Context context) {
         Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);

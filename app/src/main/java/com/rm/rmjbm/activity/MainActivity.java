@@ -28,6 +28,7 @@ import com.rm.rmjbm.fragment.AppVersionFragment;
 import com.rm.rmjbm.fragment.HomeFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.rm.rmjbm.fragment.MaterialStagingFragment;
+import com.rm.rmjbm.fragment.PhysicalInventoryFragment;
 import com.rm.rmjbm.fragment.StockViewFragment;
 import com.rm.rmjbm.model.LovModel;
 import com.rm.rmjbm.utils.SessionManagement;
@@ -222,8 +223,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             setupToolBar(getResources().getString(R.string.rm) + "-" + getResources().getString(R.string.stock_view));
             replaceFragment(new StockViewFragment(), null, "", false, false);
         } else if (v == llPhysicalInventory) {
-            Snackbar.make(v, "coming soon", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            setupToolBar(getResources().getString(R.string.rm) + "-" + getResources().getString(R.string.physical_inventory));
+            replaceFragment(new PhysicalInventoryFragment(), null, "", false, false);
+
+//            Snackbar.make(v, "coming soon", Snackbar.LENGTH_LONG)
+//                    .setAction("Action", null).show();
         } else if (v == llContactUs) {
             Snackbar.make(v, "Contact us", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();

@@ -234,7 +234,6 @@ public class StockViewFragment extends Fragment implements AdapterView.OnItemSel
     private void setWidgetEvent() {
         spStoreLoc.setOnItemSelectedListener(this);
         etBarcode.addTextChangedListener(new GenericTextWatcher(etBarcode));
-
     }
 
     private void getWidgetRef(View v) {

@@ -8,6 +8,7 @@ public class URLs {
 
     //URL_BASEURL_DEVELOPMENT
     public static final String URL_BASEURL = "http://223.30.161.199:50000/RESTAdapter";
+    public static final String URL_BASEURL_R = "http://223.30.161.199:50000/RESTAdapter/";
     public static final String TAG_USER = "pisuper";
     public static final String TAG_PASSWORD = "Jbmpi123";
 

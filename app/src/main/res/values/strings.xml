@@ -49,6 +49,7 @@
     <string name="scanned_qty">Scanned Qty</string>
     <string name="plant">Plant</string>
     <string name="material_no">Material No.</string>
+    <string name="material_code">Material Code</string>
     <string name="batch_no">Batch No.</string>
     <string name="short_text">Short Text</string>
     <string name="net_qty">Net Qty.</string>
@@ -64,4 +65,9 @@
     <string name="total_stocks">Total Stocks</string>
     <string name="batch_number">Batch Number</string>
     <string name="stock">Stock</string>
+    <string name="document_list">Document List</string>
+    <string name="count">Count :</string>
+    <string name="batch">Batch</string>
+    <string name="quantity">Quantity</string>
+
 </resources>
