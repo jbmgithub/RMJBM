@@ -9,32 +9,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/splash"
         android:gravity="center"
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/pad_20dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/jbmlogo" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tvFAPAppVersion"
             style="@style/homeItem"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="@dimen/text_20sp"
-            android:text="@string/app_version_name" />
-
-        <TextView
-            android:id="@+id/tvFAPJbmGroup"
-            style="@style/homeItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/jbm_group" />
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
+            android:text="@string/app_version_name"
+            android:textColor="@color/whiteColor"
+            android:textSize="@dimen/text_18sp" />
     </LinearLayout>
 
 </LinearLayout>

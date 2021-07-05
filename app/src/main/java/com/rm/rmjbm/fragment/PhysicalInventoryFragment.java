@@ -33,6 +33,7 @@ import com.rm.rmjbm.adaptor.SpDocumentLovAdapter;
 import com.rm.rmjbm.model.documentlov.DocumentLov;
 import com.rm.rmjbm.model.LovModel;
 import com.rm.rmjbm.model.StockDataModel;
+import com.rm.rmjbm.model.scanPhyInventoryData.PhyInventoryData;
 import com.rm.rmjbm.utils.RetrofitClient;
 import com.rm.rmjbm.utils.SessionManagement;
 import com.rm.rmjbm.utils.Utils;
@@ -79,6 +80,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
                     initSpinnerAdapter();
                 pd.dismiss();
             } else if (msg.what == 1) {
+
             } else if (msg.what == 2) {
             }
             return false;
@@ -116,6 +118,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
         init();
         if (Utils.isOnline(getContext())) {
             callDocumentLov();
+            callScanData();
         } else {
             Utils.showNetworkAlert(getContext());
         }
@@ -125,7 +128,6 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
     private void callDocumentLov() {
         pd.setTitle("Loading...");
         pd.show();
-
         String requestBodyText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<ns0:MT_RM_BC_PHY_INV_DOC_SND xmlns:ns0=\"http://RM_BC_PHY_INV_DOC\">\n" +
                 "   <UNAME>" + "TEST2" + "</UNAME>" +
@@ -143,25 +145,18 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
             public void onResponse(Call<DocumentLov> call, Response<DocumentLov> response) {
                 documentLov = new ArrayList<>();
                 documentLov = response.body().getMtRmBcPhyInvDocRec().getPhyInvNos().getItem();
-                System.out.println("body:: " + documentLov.size());
                 handler.sendEmptyMessage(0);
-
-
             }
 
             @Override
             public void onFailure(Call<DocumentLov> call, Throwable t) {
-
             }
         });
-
-
     }
 
     private void setWidgetEvent() {
         spDocumentList.setOnItemSelectedListener(this);
         etBarcode.addTextChangedListener(new GenericTextWatcher(etBarcode));
-
     }
 
     private void init() {
@@ -320,7 +315,8 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
                         if ((separated.length == 3)) {
                             if (isValidBarCode()) {
                                 if (Utils.isOnline(getContext())) {
-//                                    callDisplayList();
+//                                    callScanData();
+
                                 } else {
                                     Utils.showNetworkAlert(getContext());
                                     etBarcode.setText("");
@@ -347,6 +343,40 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
             }
             return false;
         }
+    }
+
+    private void callScanData() {
+        pd.setTitle("Loading...");
+        pd.show();
+        String requestBodyText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<ns0:MT_RM_BC_PHY_INV_SCAN_SND xmlns:ns0=\"http://RM_BC_PHY_INV_SCAN\">\n" +
+                "   <BARCODE>3002867/0000013458/2/100/5000037978</BARCODE>\n" +
+                "   <PHY_INV_NO>100001919-RM00</PHY_INV_NO>\n" +
+                "   <UNAME>TEST3</UNAME>\n" +
+                "</ns0:MT_RM_BC_PHY_INV_SCAN_SND>";
+        RequestBody requestBody = RequestBody.create(requestBodyText, MediaType.parse("text/xml"));
+
+        Call<PhyInventoryData> call = RetrofitClient
+                .getInstance()
+                .getApi()
+                .getScanData(requestBody);
+
+        call.enqueue(new Callback<PhyInventoryData>() {
+            @Override
+            public void onResponse(Call<PhyInventoryData> call, Response<PhyInventoryData> response) {
+                tvCount.setText(response.body().getMtRmBcPhyInvScanRec().getCount().toString());
+                tvMaterialCode.setText(response.body().getMtRmBcPhyInvScanRec().getMatnr().replaceFirst("^0+(?!$)", ""));
+                tvShortText.setText(response.body().getMtRmBcPhyInvScanRec().getMaktx());
+                tvBatch.setText(response.body().getMtRmBcPhyInvScanRec().getBatch().replaceFirst("^0+(?!$)", ""));
+                tvQuantity.setText(response.body().getMtRmBcPhyInvScanRec().getQty().trim());
+                Toast.makeText(getContext(), response.body().getMtRmBcPhyInvScanRec().getMessage(), Toast.LENGTH_LONG).show();
+//                handler.sendEmptyMessage(1);
+            }
+
+            @Override
+            public void onFailure(Call<PhyInventoryData> call, Throwable t) {
+            }
+        });
     }
 
 }

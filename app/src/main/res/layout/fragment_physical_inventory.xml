@@ -224,68 +224,6 @@
                     </TableLayout>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/llFPIListView"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/margin_15dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:visibility="visible">
-
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_3dp">
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:id="@+id/tvFPIStoreLocT"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.4"
-                                android:background="@drawable/cell_shape_two"
-                                android:padding="@dimen/pad_5dp"
-                                android:text="@string/store_loc"
-                                android:textColor="@color/whiteColor"
-                                android:textSize="@dimen/text_18sp" />
-
-                            <TextView
-                                android:id="@+id/tvFPIBatchNumberT"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.6"
-                                android:background="@drawable/cell_shape_two"
-                                android:padding="@dimen/pad_5dp"
-                                android:text="@string/batch_number"
-                                android:textColor="@color/whiteColor"
-                                android:textSize="@dimen/text_18sp" />
-
-                            <TextView
-                                android:id="@+id/tvFPIStockT"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.3"
-                                android:background="@drawable/cell_shape_two"
-                                android:padding="@dimen/pad_5dp"
-                                android:text="@string/stock"
-                                android:textColor="@color/whiteColor"
-                                android:textSize="@dimen/text_18sp" />
-
-                        </TableRow>
-                    </TableLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvFPIRecyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="@dimen/margin_3dp"
-                        android:layout_weight="1"
-                        android:scrollbars="vertical" />
-                </LinearLayout>
             </LinearLayout>
         </ScrollView>
 

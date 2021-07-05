@@ -38,7 +38,8 @@
                     style="@style/navItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/material_staging" />
+                    android:text="@string/material_staging"
+                    android:textColor="@color/colorPrimaryDark" />
 
             </LinearLayout>
 
@@ -67,7 +68,8 @@
                     style="@style/navItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/stock_view" />
+                    android:text="@string/stock_view"
+                    android:textColor="@color/colorPrimaryDark" />
             </LinearLayout>
 
             <View
@@ -93,7 +95,8 @@
                     style="@style/navItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/physical_inventory" />
+                    android:text="@string/physical_inventory"
+                    android:textColor="@color/colorPrimaryDark" />
 
             </LinearLayout>
 
@@ -106,9 +109,9 @@
                 android:id="@+id/llLDMContactUs"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/nav_item_height"
-                android:visibility="gone"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -124,11 +127,6 @@
                     android:text="@string/contact_us" />
 
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/dividerColor" />
 
             <LinearLayout
                 android:id="@+id/llLDMVersion"
@@ -148,7 +146,8 @@
                     style="@style/navItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_version" />
+                    android:text="@string/app_version"
+                    android:textColor="@color/colorPrimaryDark" />
 
             </LinearLayout>
 
@@ -175,7 +174,8 @@
                     style="@style/navItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/logout" />
+                    android:text="@string/logout"
+                    android:textColor="@color/colorPrimaryDark" />
 
             </LinearLayout>
 
