@@ -144,8 +144,13 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
             @Override
             public void onResponse(Call<DocumentLov> call, Response<DocumentLov> response) {
                 documentLov = new ArrayList<>();
-                documentLov = response.body().getMtRmBcPhyInvDocRec().getPhyInvNos().getItem();
-                handler.sendEmptyMessage(0);
+//                System.out.println("Null::" + response.code());
+                if (response.code() == 403) {
+                    pd.dismiss();
+                } else {
+                    documentLov = response.body().getMtRmBcPhyInvDocRec().getPhyInvNos().getItem();
+                    handler.sendEmptyMessage(0);
+                }
             }
 
             @Override
