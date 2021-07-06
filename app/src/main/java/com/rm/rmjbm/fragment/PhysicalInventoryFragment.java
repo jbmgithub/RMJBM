@@ -63,7 +63,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
     private EditText etBarcode;
     private LinearLayout llDataView;
     private Spinner spDocumentList;
-    private String strUserName, strIMEI, strDevId, strMacID, strPlant, strPhyInvNo, strBarcode, strUname, strQtys, strMatDoc;
+    private String strUserName, strIMEI, strDevId, strMacID, strPlant, strMaterialNo, strBatchNo, strTagNo, strQtys, strMatDoc, strDocumentNo;
     private SessionManagement session;
     private ArrayList<LovModel> lovList;
     private SpDocumentLovAdapter arrayAdapter;
@@ -118,7 +118,6 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
         init();
         if (Utils.isOnline(getContext())) {
             callDocumentLov();
-            callScanData();
         } else {
             Utils.showNetworkAlert(getContext());
         }
@@ -128,10 +127,11 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
     private void callDocumentLov() {
         pd.setTitle("Loading...");
         pd.show();
+        System.out.println("print:: " + strUserName + " :: " + strPlant);
         String requestBodyText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<ns0:MT_RM_BC_PHY_INV_DOC_SND xmlns:ns0=\"http://RM_BC_PHY_INV_DOC\">\n" +
-                "   <UNAME>" + "TEST2" + "</UNAME>" +
-                "   <WERKS>" + "4551" + "</WERKS>" +
+                "   <UNAME>" + strUserName.toUpperCase() + "</UNAME>" +
+                "   <WERKS>" + strPlant + "</WERKS>" +
                 "</ns0:MT_RM_BC_PHY_INV_DOC_SND>\n\n";
         RequestBody requestBody = RequestBody.create(requestBodyText, MediaType.parse("text/xml"));
 
@@ -229,6 +229,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
     }
 
     private void getWidgetRef(View v) {
+        llDataView = v.findViewById(R.id.llFPIDataView);
         tvDocumentListH = v.findViewById(R.id.tvFPIDocumentListH);
         tvBarcodeH = v.findViewById(R.id.tvFPIBarcodeH);
         etBarcode = v.findViewById(R.id.etFPIBarcode);
@@ -280,7 +281,12 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+        switch (parent.getId()) {
+            case R.id.spFPIDocumentList:
+                System.out.println("print:: ");
+                strDocumentNo = spDocumentList.getSelectedItem().toString().trim();
+                break;
+        }
     }
 
     @Override
@@ -312,11 +318,10 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
                     } else {
                         String[] separated = text.split(Pattern.quote("/"));
                         System.out.println("LeL:: " + separated.length);
-                        if ((separated.length == 3)) {
+                        if ((separated.length == 5)) {
                             if (isValidBarCode()) {
                                 if (Utils.isOnline(getContext())) {
-//                                    callScanData();
-
+                                    callScanData();
                                 } else {
                                     Utils.showNetworkAlert(getContext());
                                     etBarcode.setText("");
@@ -334,9 +339,11 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
         private boolean isValidBarCode() {
             if (etBarcode.getText().toString().length() != 0) {
                 String[] separated = etBarcode.getText().toString().trim().split(Pattern.quote("/"));
-                strPhyInvNo = separated[0].trim();
-                strBarcode = separated[1].trim();
-                strUname = separated[2].trim();
+                strMaterialNo = separated[0].trim();//MTNR
+                strBatchNo = separated[1].trim(); //Batch
+                strTagNo = separated[2].trim(); //TAGNo
+                strQtys = separated[3].trim(); //QTY
+                strMatDoc = separated[4].trim(); //MetDoc
                 return true;
             } else {
                 Utils.showCustomToast("Barcode should not be empty", getContext());
@@ -348,11 +355,12 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
     private void callScanData() {
         pd.setTitle("Loading...");
         pd.show();
+        System.out.println("print::: " + etBarcode.getText().toString().trim() + " :: " + strUserName + " :: " + strDocumentNo);
         String requestBodyText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<ns0:MT_RM_BC_PHY_INV_SCAN_SND xmlns:ns0=\"http://RM_BC_PHY_INV_SCAN\">\n" +
-                "   <BARCODE>3002867/0000013458/2/100/5000037978</BARCODE>\n" +
-                "   <PHY_INV_NO>100001919-RM00</PHY_INV_NO>\n" +
-                "   <UNAME>TEST3</UNAME>\n" +
+                "   <BARCODE>" + etBarcode.getText().toString().trim() + "</BARCODE>" +
+                "   <PHY_INV_NO>" + strDocumentNo + "</PHY_INV_NO>" +
+                "   <UNAME>" + strUserName + "</UNAME>" +
                 "</ns0:MT_RM_BC_PHY_INV_SCAN_SND>";
         RequestBody requestBody = RequestBody.create(requestBodyText, MediaType.parse("text/xml"));
 
@@ -370,7 +378,11 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
                 tvBatch.setText(response.body().getMtRmBcPhyInvScanRec().getBatch().replaceFirst("^0+(?!$)", ""));
                 tvQuantity.setText(response.body().getMtRmBcPhyInvScanRec().getQty().trim());
                 Toast.makeText(getContext(), response.body().getMtRmBcPhyInvScanRec().getMessage(), Toast.LENGTH_LONG).show();
+                pd.dismiss();
+                etBarcode.setText("");
+
 //                handler.sendEmptyMessage(1);
+
             }
 
             @Override

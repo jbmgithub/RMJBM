@@ -9,24 +9,71 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/splash"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/tvFAPAppVersion"
-            style="@style/homeItem"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:layout_width="300dp"
             android:layout_height="0dp"
             android:layout_weight="0.8"
-            android:text="@string/app_version_name"
-            android:textColor="@color/whiteColor"
+            android:src="@drawable/jbm" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvFAVRmJbm"
+                style="@style/homeItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rm_jbm"
+                android:textStyle="bold"
+                android:textColor="@color/yellowColor"
+                android:textSize="50dp" />
+
+            <TextView
+                android:id="@+id/tvFAVRawMaterial"
+                style="@style/homeItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/raw_material"
+                android:textColor="@color/blackColor"
+                android:textSize="@dimen/text_24sp" />
+
+            <TextView
+                android:id="@+id/tvFAVAppVersion"
+                style="@style/homeItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_version_name"
+                android:layout_margin="@dimen/margin_4dp"
+                android:textColor="@color/blackColor"
+                android:textSize="@dimen/text_18sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvFAVPoweredby"
+            style="@style/homeItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/powered_by"
+            android:textColor="@color/blackColor"
             android:textSize="@dimen/text_18sp" />
+
+        <TextView
+            android:id="@+id/tvFAVJBM"
+            style="@style/homeItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_20dp"
+            android:text="@string/jay_bharat_maruti_ltd"
+            android:textColor="@color/blueColor"
+            android:textSize="@dimen/text_24sp" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -590,8 +590,6 @@ public class MaterialStagingFragment extends Fragment implements View.OnClickLis
                         "<ns0:MT_RM_BC_MATBATCH_SCAN_SND xmlns:ns0=\"http://RM_BC_MATBATCH_SCAN\">\n" +
                         "   <MATNR>" + strMatnr + "</MATNR>" +
                         "   <WERKS>" + strPlant + "</WERKS>" +
-//                        "   <I_LGORT>" + "RM00" + "</I_LGORT>" +
-//                        "   <R_LGORT>" + "WP00" + "</R_LGORT>" +
                         "   <I_LGORT>" + strIssuingLovCode + "</I_LGORT>" +
                         "   <R_LGORT>" + strReceivingLovCode + "</R_LGORT>" +
                         "   <CHARG>" + strBatch + "</CHARG>" +

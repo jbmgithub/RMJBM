@@ -14,7 +14,11 @@
     <string name="contact_us">Contact Us</string>
     <string name="jbm_group">JBM Group</string>
     <string name="app_version">App Version</string>
+    <string name="powered_by">Powered By</string>
+    <string name="jay_bharat_maruti_ltd">Jay Bharat Maruti Ltd.</string>
     <string name="app_version_name">App Version: 1.0.0 (Net)</string>
+    <string name="rm_jbm">RM-JBM</string>
+    <string name="raw_material">Raw Material</string>
     <string name="login_to_continue">Login to continue</string>
     <string name="hint_user_id">User ID</string>
     <string name="server_ip">223.30.161.199</string>
