@@ -25,6 +25,7 @@ public class URLs {
     public static final String URL_DISPLAY_LIST = "/RM_BC_MAT_DISPLAYLIST";
     public static final String URL_PHY_INV_DOC_LOV = "RM_BC_PHY_INV_DOC";
     public static final String URL_PHY_INV_DISPLAY_LIST = "RM_BC_PHY_INV_SCAN";
+    public static final String URL_RM_BC_PHY_INV_DET = "RM_BC_PHY_INV_DET";
 
 }
 

@@ -2,6 +2,7 @@ package com.rm.rmjbm.Interface;
 
 import com.rm.rmjbm.model.scanPhyInventoryData.PhyInventoryData;
 import com.rm.rmjbm.model.documentlov.DocumentLov;
+import com.rm.rmjbm.model.totalCount.TotalCount;
 import com.rm.rmjbm.utils.URLs;
 
 import okhttp3.RequestBody;
@@ -19,5 +20,7 @@ public interface MyApi {
     @POST(URLs.URL_PHY_INV_DISPLAY_LIST)
     Call<PhyInventoryData> getScanData(@Body RequestBody body);
 
+    @POST(URLs.URL_RM_BC_PHY_INV_DET)
+    Call<TotalCount> getTotalCount(@Body RequestBody body);
 
 }

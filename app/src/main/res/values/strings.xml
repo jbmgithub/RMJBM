@@ -74,5 +74,6 @@
     <string name="batch">Batch</string>
     <string name="quantity">Quantity</string>
     <string name="our_milestones_are_touchstones">Our milestones are touchstones</string>
+    <string name="total_count">Total count :</string>
 
 </resources>
