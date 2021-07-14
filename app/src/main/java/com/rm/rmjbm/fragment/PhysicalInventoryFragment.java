@@ -4,9 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
@@ -25,21 +22,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import androidx.fragment.app.Fragment;
+
 import com.rm.rmjbm.R;
 import com.rm.rmjbm.activity.LoginActivity;
 import com.rm.rmjbm.adaptor.SpDocumentLovAdapter;
-import com.rm.rmjbm.model.documentlov.DocumentLov;
-import com.rm.rmjbm.model.LovModel;
 import com.rm.rmjbm.model.StockDataModel;
+import com.rm.rmjbm.model.documentlov.DocumentLov;
 import com.rm.rmjbm.model.scanPhyInventoryData.PhyInventoryData;
 import com.rm.rmjbm.model.totalCount.TotalCount;
 import com.rm.rmjbm.utils.RetrofitClient;
 import com.rm.rmjbm.utils.SessionManagement;
 import com.rm.rmjbm.utils.Utils;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +61,6 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
     private Spinner spDocumentList;
     private String strUserName, strIMEI, strDevId, strMacID, strPlant, strMaterialNo, strBatchNo, strTagNo, strQtys, strMatDoc, strDocumentNo;
     private SessionManagement session;
-    private ArrayList<LovModel> lovList;
     private SpDocumentLovAdapter arrayAdapter;
     private ProgressDialog pd;
     private List<StockDataModel> displayList;
@@ -126,35 +120,37 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
     }
 
     private void callDocumentLov() {
-//        pd.setTitle("Loading...");
-  //      pd.show();
-//        System.out.println("print:: " + strUserName + " :: " + strPlant);
         String requestBodyText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<ns0:MT_RM_BC_PHY_INV_DOC_SND xmlns:ns0=\"http://RM_BC_PHY_INV_DOC\">\n" +
                 "   <UNAME>" + strUserName.toUpperCase() + "</UNAME>" +
                 "   <WERKS>" + strPlant + "</WERKS>" +
                 "</ns0:MT_RM_BC_PHY_INV_DOC_SND>\n\n";
+
         RequestBody requestBody = RequestBody.create(requestBodyText, MediaType.parse("text/xml"));
 
         Call<DocumentLov> call = RetrofitClient
                 .getInstance()
                 .getApi()
-                .getDocumentLov(requestBody);
+                .getDocumentLov(requestBody, Utils.getAuthToken());
 
         call.enqueue(new Callback<DocumentLov>() {
             @Override
             public void onResponse(Call<DocumentLov> call, Response<DocumentLov> response) {
                 documentLov = new ArrayList<>();
-//                System.out.println("Null::" + response.code());
-                if (response.code() != 403) {
+
+                System.out.println("Null:: ");
+                if (response.isSuccessful()) {
                     documentLov = response.body().getMtRmBcPhyInvDocRec().getPhyInvNos().getItem();
                     handler.sendEmptyMessage(0);
+                } else {
+                    System.out.println("Null::Else" + response.errorBody().toString());
+                    Toast.makeText(getContext(), response.errorBody().toString(), Toast.LENGTH_SHORT).show(); // this will tell you why your api doesnt work most of time
                 }
             }
 
             @Override
             public void onFailure(Call<DocumentLov> call, Throwable t) {
-                //pd.dismiss();
+                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
             }
         });
     }
@@ -219,17 +215,6 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
             strIMEI = user.get(SessionManagement.KEY_IMEI);
             strMacID = user.get(SessionManagement.KEY_MACID);
             strPlant = user.get(SessionManagement.KEY_USERPLANT);
-
-            Gson gson = new Gson();
-            String json = user.get(SessionManagement.KEY_LOV_LIST);
-            if (json.isEmpty()) {
-                Toast.makeText(getActivity(), "There is something error", Toast.LENGTH_LONG).show();
-            } else {
-                Type type = new TypeToken<List<LovModel>>() {
-                }.getType();
-                lovList = gson.fromJson(json, type);
-//                System.out.println("Size::: " + lovList.size());
-            }
         }
     }
 
@@ -314,15 +299,17 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
         Call<TotalCount> call = RetrofitClient
                 .getInstance()
                 .getApi()
-                .getTotalCount(requestBody);
+                .getTotalCount(requestBody, Utils.getAuthToken());
 
         call.enqueue(new Callback<TotalCount>() {
             @Override
             public void onResponse(Call<TotalCount> call, Response<TotalCount> response) {
                 llDataView.setVisibility(View.GONE);
-                if (response.code() != 403) {
+                if (response.isSuccessful()) {
                     tvCountH.setText(getResources().getString(R.string.total_count));
                     tvCount.setText(Integer.toString(response.body().getMtRmBcPhyInvDetRec().getCount()));
+                } else {
+                    Toast.makeText(getContext(), response.errorBody().toString(), Toast.LENGTH_SHORT).show(); // this will tell you why your api doesnt work most of time
                 }
                 pd.dismiss();
             }
@@ -331,6 +318,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
             public void onFailure(Call<TotalCount> call, Throwable t) {
                 pd.dismiss();
                 llDataView.setVisibility(View.GONE);
+                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
             }
         });
 
@@ -383,20 +371,22 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
             }
         }
 
-        private boolean isValidBarCode() {
-            if (etBarcode.getText().toString().length() != 0) {
-                String[] separated = etBarcode.getText().toString().trim().split(Pattern.quote("/"));
-                strMaterialNo = separated[0].trim();//MTNR
-                strBatchNo = separated[1].trim(); //Batch
-                strTagNo = separated[2].trim(); //TAGNo
-                strQtys = separated[3].trim(); //QTY
-                strMatDoc = separated[4].trim(); //MetDoc
-                return true;
-            } else {
-                Utils.showCustomToast("Barcode should not be empty", getContext());
-            }
-            return false;
+
+    }
+
+    private boolean isValidBarCode() {
+        if (etBarcode.getText().toString().length() != 0) {
+            String[] separated = etBarcode.getText().toString().trim().split(Pattern.quote("/"));
+            strMaterialNo = separated[0].trim();//MTNR
+            strBatchNo = separated[1].trim(); //Batch
+            strTagNo = separated[2].trim(); //TAGNo
+            strQtys = separated[3].trim(); //QTY
+            strMatDoc = separated[4].trim(); //MetDoc
+            return true;
+        } else {
+            Utils.showCustomToast("Barcode should not be empty", getContext());
         }
+        return false;
     }
 
     private void callScanData() {
@@ -414,31 +404,33 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
         Call<PhyInventoryData> call = RetrofitClient
                 .getInstance()
                 .getApi()
-                .getScanData(requestBody);
+                .getScanData(requestBody, Utils.getAuthToken());
 
         call.enqueue(new Callback<PhyInventoryData>() {
             @Override
             public void onResponse(Call<PhyInventoryData> call, Response<PhyInventoryData> response) {
-                llDataView.setVisibility(View.VISIBLE);
-                tvCountH.setText(getResources().getString(R.string.count));
-                System.out.println("print:: " + response.body().getMtRmBcPhyInvScanRec().getCount().toString());
-                tvCount.setText(response.body().getMtRmBcPhyInvScanRec().getCount().toString());
-                tvMaterialCode.setText(response.body().getMtRmBcPhyInvScanRec().getMatnr().replaceFirst("^0+(?!$)", ""));
-                tvShortText.setText(response.body().getMtRmBcPhyInvScanRec().getMaktx());
-                tvBatch.setText(response.body().getMtRmBcPhyInvScanRec().getBatch().replaceFirst("^0+(?!$)", ""));
-                tvQuantity.setText(response.body().getMtRmBcPhyInvScanRec().getQty().trim());
-                Toast.makeText(getContext(), response.body().getMtRmBcPhyInvScanRec().getMessage(), Toast.LENGTH_LONG).show();
-                pd.dismiss();
-                etBarcode.setText("");
-
-//                handler.sendEmptyMessage(1);
-
+                if (response.isSuccessful()) {
+                    llDataView.setVisibility(View.VISIBLE);
+                    tvCountH.setText(getResources().getString(R.string.count));
+                    System.out.println("print:: " + response.body().getMtRmBcPhyInvScanRec().getCount().toString());
+                    tvCount.setText(response.body().getMtRmBcPhyInvScanRec().getCount().toString());
+                    tvMaterialCode.setText(response.body().getMtRmBcPhyInvScanRec().getMatnr().replaceFirst("^0+(?!$)", ""));
+                    tvShortText.setText(response.body().getMtRmBcPhyInvScanRec().getMaktx());
+                    tvBatch.setText(response.body().getMtRmBcPhyInvScanRec().getBatch().replaceFirst("^0+(?!$)", ""));
+                    tvQuantity.setText(response.body().getMtRmBcPhyInvScanRec().getQty().trim());
+                    Toast.makeText(getContext(), response.body().getMtRmBcPhyInvScanRec().getMessage(), Toast.LENGTH_LONG).show();
+                    pd.dismiss();
+                    etBarcode.setText("");
+                } else {
+                    Toast.makeText(getContext(), response.errorBody().toString(), Toast.LENGTH_SHORT).show(); // this will tell you why your api doesnt work most of time
+                }
             }
 
             @Override
             public void onFailure(Call<PhyInventoryData> call, Throwable t) {
                 llDataView.setVisibility(View.VISIBLE);
                 pd.dismiss();
+                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
             }
         });
     }

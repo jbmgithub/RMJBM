@@ -36,6 +36,8 @@
 
     <string name="btn_login">Login</string>
     <string name="btn_reset_server_detail">Reset Server Detail</string>
+    <string name="btn_clear">Clear</string>
+    <string name="btn_submit">Submit</string>
     <string name="err_msg_user_id">Please enter user id.</string>
     <string name="err_msg_user_password">Please enter user password</string>
     <string name="err_msg_user_plant">Please enter user plant</string>
@@ -45,6 +47,7 @@
     <string name="material_staging">Material Staging</string>
     <string name="stock_view">Stock View</string>
     <string name="physical_inventory">Physical Inventory</string>
+    <string name="material_transfer_posting">Material Transfer Posting</string>
     <string name="logout">Logout</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="issuing_loc">Issuing Loc.</string>
@@ -54,6 +57,7 @@
     <string name="plant">Plant</string>
     <string name="material_no">Material No.</string>
     <string name="material_code">Material Code</string>
+    <string name="material">Material</string>
     <string name="batch_no">Batch No.</string>
     <string name="short_text">Short Text</string>
     <string name="net_qty">Net Qty.</string>
@@ -70,6 +74,12 @@
     <string name="batch_number">Batch Number</string>
     <string name="stock">Stock</string>
     <string name="document_list">Document List</string>
+    <string name="movement_type">Movement Type</string>
+    <string name="to_location">To Location</string>
+    <string name="from_location">From Location</string>
+    <string name="total_scanned_qty">Total Scanned Qty</string>
+    <string name="no_pallet_scan">No. Pallet Scan</string>
+    <string name="std_part_qty">Std. Part Qty</string>
     <string name="count">Count :</string>
     <string name="batch">Batch</string>
     <string name="quantity">Quantity</string>

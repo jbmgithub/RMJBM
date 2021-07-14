@@ -106,6 +106,34 @@
                 android:background="@color/dividerColor" />
 
             <LinearLayout
+                android:id="@+id/llLDMMaterialTransferPosting"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/nav_item_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/pad_10dp"
+                    android:src="@drawable/ic_material_transfer_posting" />
+
+                <TextView
+                    android:id="@+id/tvLDMMaterialTransferPosting"
+                    style="@style/navItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/material_transfer_posting"
+                    android:textColor="@color/colorPrimaryDark" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerColor" />
+
+            <LinearLayout
                 android:id="@+id/llLDMContactUs"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/nav_item_height"

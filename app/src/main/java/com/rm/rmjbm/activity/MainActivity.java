@@ -28,6 +28,7 @@ import com.rm.rmjbm.fragment.AppVersionFragment;
 import com.rm.rmjbm.fragment.HomeFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.rm.rmjbm.fragment.MaterialStagingFragment;
+import com.rm.rmjbm.fragment.MaterialTransferPostingFragment;
 import com.rm.rmjbm.fragment.PhysicalInventoryFragment;
 import com.rm.rmjbm.fragment.StockViewFragment;
 import com.rm.rmjbm.model.LovModel;
@@ -39,7 +40,7 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView tvMaterialStaging, tvStockView, tvPhysicalInventory, tvVersion, tvContactUs, tvLogout;
-    private LinearLayout llMaterialStaging, llStockView, llPhysicalInventory, llContactUs, llAppVersion, llLogout;
+    private LinearLayout llMaterialStaging,getLlMaterialTransferosting, llStockView, llPhysicalInventory, llContactUs, llAppVersion, llLogout;
     private Typeface robotoRegular, robotoBold, robotoItalic;
     private Toolbar toolbar;
     private DrawerLayout drawer;
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         llMaterialStaging.setOnClickListener(this);
         llStockView.setOnClickListener(this);
         llPhysicalInventory.setOnClickListener(this);
+        getLlMaterialTransferosting.setOnClickListener(this);
         llContactUs.setOnClickListener(this);
         llAppVersion.setOnClickListener(this);
         llLogout.setOnClickListener(this);
@@ -145,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         llMaterialStaging = findViewById(R.id.llLDMMaterialStaging);
         llStockView = findViewById(R.id.llLDMStockView);
         llPhysicalInventory = findViewById(R.id.llLDMPhysicalInventory);
+        getLlMaterialTransferosting = findViewById(R.id.llLDMMaterialTransferPosting);
         llContactUs = findViewById(R.id.llLDMContactUs);
         llAppVersion = findViewById(R.id.llLDMVersion);
         llLogout = findViewById(R.id.llLDMLogout);
@@ -225,6 +228,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v == llPhysicalInventory) {
             setupToolBar(getResources().getString(R.string.rm) + "-" + getResources().getString(R.string.physical_inventory));
             replaceFragment(new PhysicalInventoryFragment(), null, "", false, false);
+        } else if (v == getLlMaterialTransferosting) {
+            setupToolBar(getResources().getString(R.string.rm) + "-" + getResources().getString(R.string.material_transfer_posting));
+            replaceFragment(new MaterialTransferPostingFragment(), null, "", false, false);
 
 //            Snackbar.make(v, "coming soon", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show();
