@@ -1,5 +1,6 @@
 package com.rm.rmjbm.Interface;
 
+import com.rm.rmjbm.model.movementLov.MovementbaseLov;
 import com.rm.rmjbm.model.scanPhyInventoryData.PhyInventoryData;
 import com.rm.rmjbm.model.documentlov.DocumentLov;
 import com.rm.rmjbm.model.totalCount.TotalCount;
@@ -26,5 +27,9 @@ public interface MyApi {
     @Headers({"Content-Type:application/xml;charset=UTF-8"})
     @POST(URLs.URL_RM_BC_PHY_INV_DET)
     Call<TotalCount> getTotalCount(@Body RequestBody body, @Header("Authorization") String auth);
+
+    @Headers({"Content-Type:text/plain;charset=UTF-8"})
+    @POST(URLs.URL_MTP_LIST)
+    Call<MovementbaseLov> getMovementLov(@Body RequestBody body, @Header("Authorization") String auth);
 
 }

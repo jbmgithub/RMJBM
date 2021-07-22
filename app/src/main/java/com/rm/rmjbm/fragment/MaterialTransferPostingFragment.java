@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -25,20 +27,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.rm.rmjbm.R;
 import com.rm.rmjbm.activity.LoginActivity;
-import com.rm.rmjbm.adaptor.SpDocumentLovAdapter;
 import com.rm.rmjbm.adaptor.SpMatTransferPostingAdapter;
-import com.rm.rmjbm.model.LovModel;
+import com.rm.rmjbm.model.movementLov.Item;
+import com.rm.rmjbm.model.movementLov.MovementbaseLov;
+import com.rm.rmjbm.model.movementLov.Mvtype;
+import com.rm.rmjbm.utils.RetrofitClient;
 import com.rm.rmjbm.utils.SessionManagement;
 import com.rm.rmjbm.utils.Utils;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.regex.Pattern;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MaterialTransferPostingFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -48,16 +59,53 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private TextView tvMovementTypeH, tvFromLocationH, tvToLocationH, tvBarcodeH, tvMaterialH, tvMaterial, tvMaterialDescH, tvMaterialDesc, tvUomH, tvUom, tvBatchH, tvBatch, tvFromLocationViewH, tvFromLocationView, tvTotalScannedQtyH, tvTotalScannedQty, tvNoPalletScanH, tvNoPalletScan, tvStdPartQtyH, tvStdPartQty;
+    private TextView tvAuthMessage, tvMovementTypeH, tvFromLocationH, tvToLocationH, tvBarcodeH, tvMaterialH, tvMaterial, tvMaterialDescH, tvMaterialDesc, tvUomH, tvUom, tvBatchH, tvBatch, tvFromLocationViewH, tvFromLocationView, tvTotalScannedQtyH, tvTotalScannedQty, tvNoPalletScanH, tvNoPalletScan, tvStdPartQtyH, tvStdPartQty;
     private Spinner spMovementType, spFromLocation, spToLocation;
     private EditText etBarcode;
     private Button btnClear, btnSubmit;
-    private LinearLayout llDataView;
+    private LinearLayout llDataView, llDetails;
     private ProgressDialog pd;
     private SessionManagement session;
     private Typeface robotoRegular, robotoBold, robotoItalic;
     private String strUserName, strIMEI, strDevId, strMacID, strPlant;
     private SpMatTransferPostingAdapter arrayAdapter;
+    private MovementbaseLov movementLov;
+    private List<String> movementList;
+    private List<String> fromLocList;
+    private List<String> toLocList;
+    private Mvtype myType;
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 0) {
+                llDetails.setVisibility(View.VISIBLE);
+                tvAuthMessage.setVisibility(View.GONE);
+                for (Item item : myType.getItem()) {
+                    movementList.add(String.valueOf(item.getBwart()));
+                }
+                movementList = removeDuplicateItem(movementList);
+                setSpinnerAdapter(spMovementType, movementList);
+
+            } else if (msg.what == 1) {
+                llDetails.setVisibility(View.GONE);
+                tvAuthMessage.setVisibility(View.VISIBLE);
+                tvAuthMessage.setText(movementLov.getMtMtpDdlistRec().getMessage());
+            } else if (msg.what == 2) {
+            }
+            return false;
+        }
+    });
+
+    private List<String> removeDuplicateItem(List<String> list) {
+        HashSet<String> hashSet = new HashSet<>();
+        hashSet.addAll(list);
+        list.clear();
+        list.addAll(hashSet);
+        Collections.sort(list);
+        list.add(0, "Please select");
+        return list;
+    }
 
     public MaterialTransferPostingFragment() {
         // Required empty public constructor
@@ -89,19 +137,73 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
         getWidgetRef(v);
         setWidgetEvent();
         init();
-//        if (Utils.isOnline(getContext())) {
-//            callDocumentLov();
-//        } else {
-//            Utils.showNetworkAlert(getContext());
-//        }
+        if (Utils.isOnline(getContext())) {
+            callMovementLov();
+        } else {
+            Utils.showNetworkAlert(getContext());
+        }
         return v;
+    }
+
+    private void callMovementLov() {
+
+        String requestBodyText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<ns0:MT_MTP_DDLIST_SND xmlns:ns0=\"http://Material_Transfer_Posting_DDList\">\n" +
+                "   <plant>" + strPlant + "</plant>" +
+                "   <userid>" + strUserName.toUpperCase() + "</userid>" +
+                "</ns0:MT_MTP_DDLIST_SND>\n\n";
+
+        RequestBody requestBody = RequestBody.create(requestBodyText, MediaType.parse("text/xml"));
+
+        Call<MovementbaseLov> call = RetrofitClient
+                .getInstance()
+                .getApi()
+                .getMovementLov(requestBody, Utils.getAuthToken());
+
+        call.enqueue(new Callback<MovementbaseLov>() {
+
+            @Override
+            public void onResponse(Call<MovementbaseLov> call, Response<MovementbaseLov> response) {
+                if (!response.isSuccessful()) {
+                    llDetails.setVisibility(View.GONE);
+                    tvAuthMessage.setVisibility(View.VISIBLE);
+                    tvAuthMessage.setText(response.errorBody().toString());
+                    return;
+                }
+                movementLov = response.body();
+                Gson gson = new GsonBuilder().create();
+
+                System.out.println("msg:: " + response.body().getMtMtpDdlistRec().getSuccess());
+                if (movementLov.getMtMtpDdlistRec().getSuccess().equalsIgnoreCase("S")) {
+                    TypeToken<Mvtype> responseTypeToken = new TypeToken<Mvtype>() {};
+                    myType = gson.fromJson(gson.toJson(movementLov.getMtMtpDdlistRec().getMvtype()), responseTypeToken.getType());
+                    handler.sendEmptyMessage(0);
+                } else {
+                    handler.sendEmptyMessage(1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovementbaseLov> call, Throwable t) {
+                llDetails.setVisibility(View.GONE);
+                tvAuthMessage.setVisibility(View.VISIBLE);
+                tvAuthMessage.setText(t.toString());
+                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
+            }
+        });
+
     }
 
     private void init() {
         initSession();
         setFontStyle();
         setTextFont();
-        initSpinnerAdapter();
+        movementList = new ArrayList<>();
+        fromLocList = new ArrayList<>();
+        toLocList = new ArrayList<>();
+        setSpinnerAdapter(spMovementType, movementList);
+        setSpinnerAdapter(spFromLocation, fromLocList);
+        setSpinnerAdapter(spToLocation, toLocList);
 
         pd = new ProgressDialog(getContext());
         pd.setCancelable(false);
@@ -137,10 +239,6 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
 
     }
 
-    private void initSpinnerAdapter() {
-//        setSpinnerAdapter(spMovementType, documentLov);
-    }
-
     private void setSpinnerAdapter(Spinner spinner, List<String> list) {
         arrayAdapter = new SpMatTransferPostingAdapter(getContext(), android.R.layout.simple_spinner_dropdown_item, list);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -148,6 +246,7 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
     }
 
     private void setTextFont() {
+        tvAuthMessage.setTypeface(robotoRegular);
         tvMovementTypeH.setTypeface(robotoBold);
         tvFromLocationH.setTypeface(robotoBold);
         tvToLocationH.setTypeface(robotoBold);
@@ -200,7 +299,9 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
     }
 
     private void getWidgetRef(View v) {
+        llDetails = v.findViewById(R.id.llFMTPDetails);
         llDataView = v.findViewById(R.id.llFMTPDataView);
+        tvAuthMessage = v.findViewById(R.id.tvFMTPMessage);
         tvMovementTypeH = v.findViewById(R.id.tvFMTPMovemontTypeH);
         spMovementType = v.findViewById(R.id.spFMTPMovemontType);
         tvFromLocationH = v.findViewById(R.id.tvFMTPFromLocationH);
@@ -231,7 +332,25 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+        switch (parent.getId()) {
+            case R.id.spFMTPMovemontType:
+                fromLocList.clear();
+                for (Item item : myType.getItem())
+                    if (spMovementType.getSelectedItem().toString().equalsIgnoreCase(item.getBwart().toString()))
+                        fromLocList.add(item.getLgortF());
+                fromLocList = removeDuplicateItem(fromLocList);
+                setSpinnerAdapter(spFromLocation, fromLocList);
+                break;
+            case R.id.spFMTPFromLocation:
+                toLocList.clear();
+                for (Item item : myType.getItem())
+                    if (spMovementType.getSelectedItem().toString().equalsIgnoreCase(item.getBwart().toString())
+                            && spFromLocation.getSelectedItem().toString().equalsIgnoreCase(item.getLgortF().toString()))
+                        toLocList.add(item.getLgortT());
+                toLocList = removeDuplicateItem(toLocList);
+                setSpinnerAdapter(spToLocation, toLocList);
+                break;
+        }
     }
 
     @Override

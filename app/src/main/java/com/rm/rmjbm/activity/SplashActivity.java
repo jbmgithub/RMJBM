@@ -93,6 +93,7 @@ public class SplashActivity extends AppCompatActivity {
         return permissionaaa;
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
