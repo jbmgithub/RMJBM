@@ -33,6 +33,11 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
+    public static String removerZeroFromPrefix(String string) {
+        String finalStr = string.replaceFirst("^0*", "");
+        if (finalStr.isEmpty()) finalStr = "0";
+        return finalStr;
+    }
 
     public static void hideKeyboardFrom(Context context, View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);

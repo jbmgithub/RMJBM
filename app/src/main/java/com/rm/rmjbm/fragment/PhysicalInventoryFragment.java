@@ -144,13 +144,13 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
                     handler.sendEmptyMessage(0);
                 } else {
                     System.out.println("Null::Else" + response.errorBody().toString());
-                    Toast.makeText(getContext(), response.errorBody().toString(), Toast.LENGTH_SHORT).show(); // this will tell you why your api doesnt work most of time
+                    Toast.makeText(getActivity(), response.errorBody().toString(), Toast.LENGTH_SHORT).show(); // this will tell you why your api doesnt work most of time
                 }
             }
 
             @Override
             public void onFailure(Call<DocumentLov> call, Throwable t) {
-                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
+                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
             }
         });
     }
@@ -309,7 +309,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
                     tvCountH.setText(getResources().getString(R.string.total_count));
                     tvCount.setText(Integer.toString(response.body().getMtRmBcPhyInvDetRec().getCount()));
                 } else {
-                    Toast.makeText(getContext(), response.errorBody().toString(), Toast.LENGTH_SHORT).show(); // this will tell you why your api doesnt work most of time
+                    Toast.makeText(getActivity(), response.errorBody().toString(), Toast.LENGTH_SHORT).show(); // this will tell you why your api doesnt work most of time
                 }
                 pd.dismiss();
             }
@@ -318,7 +318,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
             public void onFailure(Call<TotalCount> call, Throwable t) {
                 pd.dismiss();
                 llDataView.setVisibility(View.GONE);
-                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
+                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
             }
         });
 
@@ -418,11 +418,11 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
                     tvShortText.setText(response.body().getMtRmBcPhyInvScanRec().getMaktx());
                     tvBatch.setText(response.body().getMtRmBcPhyInvScanRec().getBatch().replaceFirst("^0+(?!$)", ""));
                     tvQuantity.setText(response.body().getMtRmBcPhyInvScanRec().getQty().trim());
-                    Toast.makeText(getContext(), response.body().getMtRmBcPhyInvScanRec().getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), response.body().getMtRmBcPhyInvScanRec().getMessage(), Toast.LENGTH_LONG).show();
                     pd.dismiss();
                     etBarcode.setText("");
                 } else {
-                    Toast.makeText(getContext(), response.errorBody().toString(), Toast.LENGTH_SHORT).show(); // this will tell you why your api doesnt work most of time
+                    Toast.makeText(getActivity(), response.errorBody().toString(), Toast.LENGTH_SHORT).show(); // this will tell you why your api doesnt work most of time
                 }
             }
 
@@ -430,7 +430,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
             public void onFailure(Call<PhyInventoryData> call, Throwable t) {
                 llDataView.setVisibility(View.VISIBLE);
                 pd.dismiss();
-                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
+                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
             }
         });
     }

@@ -35,6 +35,9 @@ import com.rm.rmjbm.adaptor.SpMatTransferPostingAdapter;
 import com.rm.rmjbm.model.movementLov.Item;
 import com.rm.rmjbm.model.movementLov.MovementbaseLov;
 import com.rm.rmjbm.model.movementLov.Mvtype;
+import com.rm.rmjbm.model.mtpList.Getdata;
+import com.rm.rmjbm.model.mtpList.MtpList;
+import com.rm.rmjbm.utils.ConstantsUtils;
 import com.rm.rmjbm.utils.RetrofitClient;
 import com.rm.rmjbm.utils.SessionManagement;
 import com.rm.rmjbm.utils.Utils;
@@ -44,6 +47,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -59,7 +63,7 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private TextView tvAuthMessage, tvMovementTypeH, tvFromLocationH, tvToLocationH, tvBarcodeH, tvMaterialH, tvMaterial, tvMaterialDescH, tvMaterialDesc, tvUomH, tvUom, tvBatchH, tvBatch, tvFromLocationViewH, tvFromLocationView, tvTotalScannedQtyH, tvTotalScannedQty, tvNoPalletScanH, tvNoPalletScan, tvStdPartQtyH, tvStdPartQty;
+    private TextView tvNoScanListMsg, tvAuthMessage, tvMovementTypeH, tvFromLocationH, tvToLocationH, tvBarcodeH, tvMaterialH, tvMaterial, tvMaterialDescH, tvMaterialDesc, tvUomH, tvUom, tvBatchH, tvBatch, tvFromLocationViewH, tvFromLocationView, tvTotalScannedQtyH, tvTotalScannedQty, tvNoPalletScanH, tvNoPalletScan, tvStdPartQtyH, tvStdPartQty;
     private Spinner spMovementType, spFromLocation, spToLocation;
     private EditText etBarcode;
     private Button btnClear, btnSubmit;
@@ -70,15 +74,21 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
     private String strUserName, strIMEI, strDevId, strMacID, strPlant;
     private SpMatTransferPostingAdapter arrayAdapter;
     private MovementbaseLov movementLov;
+    private MtpList mtpList;
     private List<String> movementList;
     private List<String> fromLocList;
     private List<String> toLocList;
     private Mvtype myType;
+    private Getdata myGetData;
+    private float scannedQtyP = 0.0F;
+    private List<String> barcodeList;
+
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             if (msg.what == 0) {
+                pd.dismiss();
                 llDetails.setVisibility(View.VISIBLE);
                 tvAuthMessage.setVisibility(View.GONE);
                 for (Item item : myType.getItem()) {
@@ -88,14 +98,54 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                 setSpinnerAdapter(spMovementType, movementList);
 
             } else if (msg.what == 1) {
+                pd.dismiss();
                 llDetails.setVisibility(View.GONE);
                 tvAuthMessage.setVisibility(View.VISIBLE);
                 tvAuthMessage.setText(movementLov.getMtMtpDdlistRec().getMessage());
             } else if (msg.what == 2) {
+                pd.dismiss();
+                llDataView.setVisibility(View.VISIBLE);
+                tvNoScanListMsg.setVisibility(View.GONE);
+
+                tvMaterial.setText(Utils.removerZeroFromPrefix(myGetData.getMatnr()));
+                tvMaterialDesc.setText(myGetData.getMaktx());
+                tvUom.setText(myGetData.getMeins());
+                tvBatch.setText(Utils.removerZeroFromPrefix(myGetData.getCharg()));
+                tvFromLocationView.setText(spFromLocation.getSelectedItem().toString());
+
+                barcodeList.add(etBarcode.getText().toString());
+//                barcodeList = removeDuplicateItemFromList(barcodeList);
+                int count = 0;
+                for (int i = 0; i < barcodeList.size(); i++)
+                    if (etBarcode.getText().toString().equalsIgnoreCase(barcodeList.get(i)))
+                        count++;
+
+                if (count == 1)
+                    scannedQtyP = scannedQtyP + Float.parseFloat(myGetData.getScanq());
+                tvTotalScannedQty.setText(String.valueOf(scannedQtyP));
+                tvNoPalletScan.setText(myGetData.getScanp().toString());
+                tvStdPartQty.setText(myGetData.getLabst().toString());
+                etBarcode.setText("");
+            } else if (msg.what == 3) {
+                pd.dismiss();
+                etBarcode.setText("");
+                llDataView.setVisibility(View.GONE);
+                tvNoScanListMsg.setVisibility(View.VISIBLE);
+                tvNoScanListMsg.setText(mtpList.getMTMTPGetlistRec().getMessage());
             }
             return false;
         }
     });
+
+    private List<String> removeDuplicateItemFromList(List<String> list) {
+        HashSet<String> hashSet = new HashSet<>();
+        hashSet.addAll(barcodeList);
+        barcodeList.clear();
+        barcodeList.addAll(hashSet);
+        Collections.sort(barcodeList);
+        return list;
+
+    }
 
     private List<String> removeDuplicateItem(List<String> list) {
         HashSet<String> hashSet = new HashSet<>();
@@ -103,9 +153,10 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
         list.clear();
         list.addAll(hashSet);
         Collections.sort(list);
-        list.add(0, "Please select");
+        list.add(0, ConstantsUtils.PLEASE_SELECT);
         return list;
     }
+
 
     public MaterialTransferPostingFragment() {
         // Required empty public constructor
@@ -168,6 +219,7 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                     llDetails.setVisibility(View.GONE);
                     tvAuthMessage.setVisibility(View.VISIBLE);
                     tvAuthMessage.setText(response.errorBody().toString());
+                    pd.dismiss();
                     return;
                 }
                 movementLov = response.body();
@@ -175,7 +227,8 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
 
                 System.out.println("msg:: " + response.body().getMtMtpDdlistRec().getSuccess());
                 if (movementLov.getMtMtpDdlistRec().getSuccess().equalsIgnoreCase("S")) {
-                    TypeToken<Mvtype> responseTypeToken = new TypeToken<Mvtype>() {};
+                    TypeToken<Mvtype> responseTypeToken = new TypeToken<Mvtype>() {
+                    };
                     myType = gson.fromJson(gson.toJson(movementLov.getMtMtpDdlistRec().getMvtype()), responseTypeToken.getType());
                     handler.sendEmptyMessage(0);
                 } else {
@@ -188,7 +241,8 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                 llDetails.setVisibility(View.GONE);
                 tvAuthMessage.setVisibility(View.VISIBLE);
                 tvAuthMessage.setText(t.toString());
-                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
+                pd.dismiss();
+                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
             }
         });
 
@@ -198,6 +252,7 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
         initSession();
         setFontStyle();
         setTextFont();
+        barcodeList = new ArrayList<>();
         movementList = new ArrayList<>();
         fromLocList = new ArrayList<>();
         toLocList = new ArrayList<>();
@@ -229,6 +284,9 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
 
             }
         });
+
+        etBarcode.setFocusable(true);
+//        etBarcode.setClickable(false);
         etBarcode.setLongClickable(false);
         etBarcode.setTextIsSelectable(false);
         etBarcode.setInputType(InputType.TYPE_NULL);
@@ -236,7 +294,6 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
             etBarcode.setRawInputType(InputType.TYPE_CLASS_TEXT);
             etBarcode.setTextIsSelectable(true);
         }
-
     }
 
     private void setSpinnerAdapter(Spinner spinner, List<String> list) {
@@ -246,6 +303,7 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
     }
 
     private void setTextFont() {
+        tvNoScanListMsg.setTypeface(robotoRegular);
         tvAuthMessage.setTypeface(robotoRegular);
         tvMovementTypeH.setTypeface(robotoBold);
         tvFromLocationH.setTypeface(robotoBold);
@@ -299,8 +357,11 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
     }
 
     private void getWidgetRef(View v) {
+
         llDetails = v.findViewById(R.id.llFMTPDetails);
         llDataView = v.findViewById(R.id.llFMTPDataView);
+        tvNoScanListMsg = v.findViewById(R.id.tvFMTPMsgNoScanList);
+
         tvAuthMessage = v.findViewById(R.id.tvFMTPMessage);
         tvMovementTypeH = v.findViewById(R.id.tvFMTPMovemontTypeH);
         spMovementType = v.findViewById(R.id.spFMTPMovemontType);
@@ -340,6 +401,7 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                         fromLocList.add(item.getLgortF());
                 fromLocList = removeDuplicateItem(fromLocList);
                 setSpinnerAdapter(spFromLocation, fromLocList);
+                clearDataView();
                 break;
             case R.id.spFMTPFromLocation:
                 toLocList.clear();
@@ -349,8 +411,24 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                         toLocList.add(item.getLgortT());
                 toLocList = removeDuplicateItem(toLocList);
                 setSpinnerAdapter(spToLocation, toLocList);
+                clearDataView();
                 break;
+            case R.id.spFMTPToLocation:
+                clearDataView();
+                break;
+
         }
+    }
+
+    private void clearDataView() {
+        tvMaterial.setText("");
+        tvMaterialDesc.setText("");
+        tvUom.setText("");
+        tvBatch.setText("");
+        tvFromLocationView.setText("");
+        tvTotalScannedQty.setText("");
+        tvNoPalletScan.setText("");
+        tvStdPartQty.setText("");
     }
 
     @Override
@@ -360,6 +438,10 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
 
     @Override
     public void onClick(View v) {
+        if (v == btnClear) {
+            setSpinnerAdapter(spMovementType, movementList);
+            clearDataView();
+        }
 
     }
 
@@ -389,21 +471,119 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
 
         public void afterTextChanged(Editable editable) {
             String text = editable.toString();
+//            String text = "3006438/0000013245/1/50/5000037639";
             switch (view.getId()) {
                 case R.id.etFMTPBarcode:
                     if (text.isEmpty() || text.length() == 0 || text.equals(null)) {
                     } else {
+                        String[] separated = text.split(Pattern.quote("/"));
+                        System.out.println("LeL::L " + etBarcode.getText().toString());
+//                        if ((separated.length == 5)) {
                         if (isValidBarCode()) {
-                            if (Utils.isOnline(getContext())) {
-//                                callScanData();
+                            if (isValidMovementType()) {
+                                if (isValidFromLocation()) {
+                                    if (isValidToLocation()) {
+                                        if (Utils.isOnline(getContext())) {
+                                            System.out.println("LeL::s " + spMovementType.getSelectedItem().toString());
+                                            callScanData();
+                                        } else {
+                                            Utils.showNetworkAlert(getContext());
+                                            etBarcode.setText("");
+                                        }
+                                    } else {
+                                        etBarcode.setText("");
+                                    }
+                                } else {
+                                    etBarcode.setText("");
+                                }
                             } else {
-                                Utils.showNetworkAlert(getContext());
                                 etBarcode.setText("");
                             }
+                        } else {
+                            etBarcode.setText("");
                         }
                     }
                     break;
             }
         }
+    }
+
+    private void callScanData() {
+        pd.setTitle("Loading...");
+        pd.show();
+//        System.out.println("print::: " + etBarcode.getText().toString().trim() + " :: " + strUserName + " :: " + strDocumentNo);
+        String requestBodyText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<ns0:MT_MTP_Getlist_snd xmlns:ns0=\"http://MTP_Getlist\">\n" +
+                "   <plant>" + strPlant + "</plant>" +
+                "   <movtyp>" + spMovementType.getSelectedItem().toString() + "</movtyp>" +
+                "   <slocf>" + spFromLocation.getSelectedItem().toString() + "</slocf>" +
+                "   <sloct>" + spToLocation.getSelectedItem().toString() + "</sloct>" +
+                "   <barc>" + etBarcode.getText().toString().trim() + "</barc>" +
+                "</ns0:MT_MTP_Getlist_snd>";
+        RequestBody requestBody = RequestBody.create(requestBodyText, MediaType.parse("text/xml"));
+
+        Call<MtpList> call = RetrofitClient
+                .getInstance()
+                .getApi()
+                .getMTPScanData(requestBody, Utils.getAuthToken());
+
+        call.enqueue(new Callback<MtpList>() {
+            @Override
+            public void onResponse(Call<MtpList> call, Response<MtpList> response) {
+                if (!response.isSuccessful()) {
+                    llDataView.setVisibility(View.GONE);
+                    tvNoScanListMsg.setVisibility(View.VISIBLE);
+                    tvNoScanListMsg.setText(response.errorBody().toString());
+                    pd.dismiss();
+                    etBarcode.setText("");
+                    return;
+                }
+
+                mtpList = response.body();
+                Gson gson = new GsonBuilder().create();
+
+                System.out.println("msg:: " + mtpList.getMTMTPGetlistRec().getSuccess());
+                if (mtpList.getMTMTPGetlistRec().getSuccess().equalsIgnoreCase("S")) {
+                    TypeToken<Getdata> responseTypeToken = new TypeToken<Getdata>() {
+                    };
+                    myGetData = gson.fromJson(gson.toJson(mtpList.getMTMTPGetlistRec().getGetdata()), responseTypeToken.getType());
+                    handler.sendEmptyMessage(2);
+                } else handler.sendEmptyMessage(3);
+            }
+
+            @Override
+            public void onFailure(Call<MtpList> call, Throwable t) {
+                llDataView.setVisibility(View.GONE);
+                tvNoScanListMsg.setVisibility(View.VISIBLE);
+                tvNoScanListMsg.setText(t.toString());
+                etBarcode.setText("");
+                pd.dismiss();
+                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
+            }
+        });
+    }
+
+    private boolean isValidMovementType() {
+        if (!spMovementType.getSelectedItem().toString().equalsIgnoreCase(ConstantsUtils.PLEASE_SELECT))
+            return true;
+        else
+            Utils.showCustomToast("Please select MOVEMENT TYPE", getContext());
+        return false;
+    }
+
+    private boolean isValidFromLocation() {
+        if (!spFromLocation.getSelectedItem().toString().equalsIgnoreCase(ConstantsUtils.PLEASE_SELECT))
+            return true;
+        else
+            Utils.showCustomToast("Please select FROM LOCATION", getContext());
+        return false;
+    }
+
+    private boolean isValidToLocation() {
+        if (!spToLocation.getSelectedItem().toString().equalsIgnoreCase(ConstantsUtils.PLEASE_SELECT))
+            return true;
+        else
+            Utils.showCustomToast("Please select TO LOCATION", getContext());
+        return false;
     }
 }

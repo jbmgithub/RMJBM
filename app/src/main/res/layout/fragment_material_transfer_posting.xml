@@ -22,10 +22,10 @@
         <LinearLayout
             android:id="@+id/llFMTPDetails"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="@dimen/pad_5dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -164,6 +164,14 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tvFMTPMsgNoScanList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="#000"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/llFMTPDataView"
                 android:layout_width="match_parent"
@@ -171,7 +179,7 @@
                 android:layout_marginTop="@dimen/margin_8dp"
                 android:background="@drawable/ll_bg"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TableLayout
                     android:id="@+id/tlFMTPDataView"

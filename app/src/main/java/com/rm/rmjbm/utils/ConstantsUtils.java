@@ -17,6 +17,6 @@ public class ConstantsUtils {
     public static int TAG_TIMEOUT_MS = 30000;
     public static String TAG_CHOOSE = "Choose";
     public static String TAG_MANUALLY_MSG = "Create Invoice Manually";
-
+    public static String PLEASE_SELECT="Please select";
 
 }
