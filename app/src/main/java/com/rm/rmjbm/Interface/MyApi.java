@@ -1,5 +1,6 @@
 package com.rm.rmjbm.Interface;
 
+import com.rm.rmjbm.model.MTPSubmit.MTMTPSubmitRec;
 import com.rm.rmjbm.model.movementLov.MovementbaseLov;
 import com.rm.rmjbm.model.mtpList.MtpList;
 import com.rm.rmjbm.model.scanPhyInventoryData.PhyInventoryData;
@@ -36,5 +37,9 @@ public interface MyApi {
     @Headers({"Content-Type:application/xml;charset=UTF-8"})
     @POST(URLs.URL_MTP_GETLIST)
     Call<MtpList> getMTPScanData(@Body RequestBody body, @Header("Authorization") String auth);
+
+    @Headers({"Content-Type:application/xml;charset=UTF-8"})
+    @POST(URLs.URL_MTP_SUBMIT)
+    Call<MTMTPSubmitRec> getMTPSubmit(@Body RequestBody body, @Header("Authorization") String auth);
 
 }

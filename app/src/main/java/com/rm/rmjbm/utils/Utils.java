@@ -472,6 +472,21 @@ public class Utils {
         builder.show();
     }
 
+    public static void showMyAlert(Context context,String strTitle,String strMsg) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(strTitle);
+        builder.setMessage(strMsg);
+        builder.setNeutralButton("OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.show();
+    }
+
     public static String getCurrentDate() {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");

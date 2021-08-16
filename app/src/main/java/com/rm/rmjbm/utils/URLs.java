@@ -28,7 +28,7 @@ public class URLs {
     public static final String URL_RM_BC_PHY_INV_DET = "RM_BC_PHY_INV_DET";
     public static final String URL_MTP_LIST = "MTP_LIST";
     public static final String URL_MTP_GETLIST = "MTP_GETLIST";
-
+    public static final String URL_MTP_SUBMIT = "MTP_Submit";
 
 
 }

@@ -71,6 +71,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
         @Override
         public boolean handleMessage(Message msg) {
             if (msg.what == 0) {
+                System.out.println("doci:: " + documentLov.size());
                 if (!documentLov.isEmpty())
                     initSpinnerAdapter();
                 // pd.dismiss();
@@ -137,8 +138,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
             @Override
             public void onResponse(Call<DocumentLov> call, Response<DocumentLov> response) {
                 documentLov = new ArrayList<>();
-
-                System.out.println("Null:: ");
+//                System.out.println("Null:: ");
                 if (response.isSuccessful()) {
                     documentLov = response.body().getMtRmBcPhyInvDocRec().getPhyInvNos().getItem();
                     handler.sendEmptyMessage(0);
@@ -150,6 +150,7 @@ public class PhysicalInventoryFragment extends Fragment implements AdapterView.O
 
             @Override
             public void onFailure(Call<DocumentLov> call, Throwable t) {
+//                System.out.println("Null::1 ");
                 Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
             }
         });

@@ -301,7 +301,6 @@
                                     android:inputType="numberSigned"
                                     android:maxLength="4"
                                     android:singleLine="true"
-                                    android:text="@string/plat_code"
                                     android:textColor="@color/blackColor"
                                     android:textSize="@dimen/text_16sp" />
 

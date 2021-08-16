@@ -32,6 +32,7 @@ import com.google.gson.reflect.TypeToken;
 import com.rm.rmjbm.R;
 import com.rm.rmjbm.activity.LoginActivity;
 import com.rm.rmjbm.adaptor.SpMatTransferPostingAdapter;
+import com.rm.rmjbm.model.MTPSubmit.MTMTPSubmitRec;
 import com.rm.rmjbm.model.movementLov.Item;
 import com.rm.rmjbm.model.movementLov.MovementbaseLov;
 import com.rm.rmjbm.model.movementLov.Mvtype;
@@ -42,6 +43,10 @@ import com.rm.rmjbm.utils.RetrofitClient;
 import com.rm.rmjbm.utils.SessionManagement;
 import com.rm.rmjbm.utils.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,6 +56,7 @@ import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -66,7 +72,7 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
     private TextView tvNoScanListMsg, tvAuthMessage, tvMovementTypeH, tvFromLocationH, tvToLocationH, tvBarcodeH, tvMaterialH, tvMaterial, tvMaterialDescH, tvMaterialDesc, tvUomH, tvUom, tvBatchH, tvBatch, tvFromLocationViewH, tvFromLocationView, tvTotalScannedQtyH, tvTotalScannedQty, tvNoPalletScanH, tvNoPalletScan, tvStdPartQtyH, tvStdPartQty;
     private Spinner spMovementType, spFromLocation, spToLocation;
     private EditText etBarcode;
-    private Button btnClear, btnSubmit;
+    private Button btnCancel, btnSubmit;
     private LinearLayout llDataView, llDetails;
     private ProgressDialog pd;
     private SessionManagement session;
@@ -79,10 +85,13 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
     private List<String> fromLocList;
     private List<String> toLocList;
     private Mvtype myType;
+    private List<String> barcodeList;
     private Getdata myGetData;
     private float scannedQtyP = 0.0F;
-    private List<String> barcodeList;
-
+    private int count = 0;
+    private int totalPalletScanCount = 0;
+    private String strMaterial = "";
+    private String strBatch = "";
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -91,11 +100,14 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                 pd.dismiss();
                 llDetails.setVisibility(View.VISIBLE);
                 tvAuthMessage.setVisibility(View.GONE);
-                for (Item item : myType.getItem()) {
-                    movementList.add(String.valueOf(item.getBwart()));
+                if (myType != null) {
+                    System.out.println("size:::: " + myType.getItem().size());
+                    for (Item item : myType.getItem()) {
+                        movementList.add(String.valueOf(item.getBwart()));
+                    }
+                    movementList = removeDuplicateItem(movementList);
+                    setSpinnerAdapter(spMovementType, movementList);
                 }
-                movementList = removeDuplicateItem(movementList);
-                setSpinnerAdapter(spMovementType, movementList);
 
             } else if (msg.what == 1) {
                 pd.dismiss();
@@ -106,6 +118,13 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                 pd.dismiss();
                 llDataView.setVisibility(View.VISIBLE);
                 tvNoScanListMsg.setVisibility(View.GONE);
+                System.out.println("str::: " + strMaterial);
+                if (strMaterial.equalsIgnoreCase("")) {
+                    strMaterial = Utils.removerZeroFromPrefix(myGetData.getMatnr());
+                }
+                if (strBatch.equalsIgnoreCase("")) {
+                    strBatch = Utils.removerZeroFromPrefix(myGetData.getCharg());
+                }
 
                 tvMaterial.setText(Utils.removerZeroFromPrefix(myGetData.getMatnr()));
                 tvMaterialDesc.setText(myGetData.getMaktx());
@@ -115,15 +134,20 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
 
                 barcodeList.add(etBarcode.getText().toString());
 //                barcodeList = removeDuplicateItemFromList(barcodeList);
-                int count = 0;
+//                totalPalletScanCount = 0;
+                System.out.println("totalPalletScanCount::S " + barcodeList.size());
+                count = 0;
                 for (int i = 0; i < barcodeList.size(); i++)
-                    if (etBarcode.getText().toString().equalsIgnoreCase(barcodeList.get(i)))
+                    if (etBarcode.getText().toString().equalsIgnoreCase(barcodeList.get(i))) {
                         count++;
-
+                    }
                 if (count == 1)
                     scannedQtyP = scannedQtyP + Float.parseFloat(myGetData.getScanq());
+                else
+                    Utils.showMyAlert(getContext(), "Error", "Sticker already scanned...");
                 tvTotalScannedQty.setText(String.valueOf(scannedQtyP));
-                tvNoPalletScan.setText(myGetData.getScanp().toString());
+                totalPalletScanCount = removeDuplicateItemFromList(barcodeList).size();
+                tvNoPalletScan.setText(String.valueOf(totalPalletScanCount));
                 tvStdPartQty.setText(myGetData.getLabst().toString());
                 etBarcode.setText("");
             } else if (msg.what == 3) {
@@ -223,14 +247,60 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                     return;
                 }
                 movementLov = response.body();
-                Gson gson = new GsonBuilder().create();
+//                Gson gson = new GsonBuilder().create();
 
                 System.out.println("msg:: " + response.body().getMtMtpDdlistRec().getSuccess());
                 if (movementLov.getMtMtpDdlistRec().getSuccess().equalsIgnoreCase("S")) {
-                    TypeToken<Mvtype> responseTypeToken = new TypeToken<Mvtype>() {
-                    };
-                    myType = gson.fromJson(gson.toJson(movementLov.getMtMtpDdlistRec().getMvtype()), responseTypeToken.getType());
+                    JSONObject json = null;
+                    try {
+                        json = new JSONObject(String.valueOf(movementLov.getMtMtpDdlistRec().getMvtype()));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (json.has("item")) {
+                        JSONObject dataObject = json.optJSONObject("item");
+                        if (dataObject != null) {
+                            //Do things with object.
+                            myType = new Mvtype();
+                            List<Item> listItem = new ArrayList<>();
+                            Item item = new Item();
+                            try {
+                                item.setLgortT(dataObject.get("lgort_t").toString());
+                                item.setLgortF(dataObject.get("lgort_f").toString());
+                                item.setWerks(dataObject.getInt("werks"));
+                                item.setBwart(dataObject.getInt("bwart"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            listItem.add(item);
+                            myType.setItem(listItem);
+                        } else {
+                            //Do things with array
+                            JSONArray jsonArray = json.optJSONArray("item");
+                            myType = new Mvtype();
+                            List<Item> listItem = new ArrayList<>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                Item item = new Item();
+                                try {
+                                    item.setLgortT(jsonArray.getJSONObject(i).getString("lgort_t"));
+                                    item.setLgortF(jsonArray.getJSONObject(i).getString("lgort_f"));
+                                    item.setWerks(jsonArray.getJSONObject(i).getInt("werks"));
+                                    item.setBwart(jsonArray.getJSONObject(i).getInt("bwart"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                listItem.add(item);
+                            }
+                            myType.setItem(listItem);
+
+/*                            TypeToken<Mvtype> responseTypeToken = new TypeToken<Mvtype>() {
+                            };
+                            myType = gson.fromJson(gson.toJson(movementLov.getMtMtpDdlistRec().getMvtype()), responseTypeToken.getType());*/
+                        }
+                    }
                     handler.sendEmptyMessage(0);
+
                 } else {
                     handler.sendEmptyMessage(1);
                 }
@@ -352,7 +422,7 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
         spFromLocation.setOnItemSelectedListener(this);
         spToLocation.setOnItemSelectedListener(this);
         etBarcode.addTextChangedListener(new GenericTextWatcher(etBarcode));
-        btnClear.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
     }
 
@@ -387,7 +457,7 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
         tvNoPalletScan = v.findViewById(R.id.tvFMTPNoPalletScan);
         tvStdPartQtyH = v.findViewById(R.id.tvFMTPStdPartQtyH);
         tvStdPartQty = v.findViewById(R.id.tvFMTPStdPartQty);
-        btnClear = v.findViewById(R.id.btnFMTPClear);
+        btnCancel = v.findViewById(R.id.btnFMTPCancel);
         btnSubmit = v.findViewById(R.id.btnFMTPSubmit);
     }
 
@@ -402,6 +472,12 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                 fromLocList = removeDuplicateItem(fromLocList);
                 setSpinnerAdapter(spFromLocation, fromLocList);
                 clearDataView();
+                barcodeList.clear();
+                scannedQtyP = 0;
+                count = 0;
+                totalPalletScanCount = 0;
+                strMaterial = "";
+                strBatch = "";
                 break;
             case R.id.spFMTPFromLocation:
                 toLocList.clear();
@@ -412,9 +488,24 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                 toLocList = removeDuplicateItem(toLocList);
                 setSpinnerAdapter(spToLocation, toLocList);
                 clearDataView();
+                barcodeList.clear();
+                scannedQtyP = 0;
+                count = 0;
+                totalPalletScanCount = 0;
+                strMaterial = "";
+                strBatch = "";
+
                 break;
             case R.id.spFMTPToLocation:
                 clearDataView();
+                barcodeList.clear();
+                scannedQtyP = 0;
+                count = 0;
+                totalPalletScanCount = 0;
+                strMaterial = "";
+                strBatch = "";
+
+//                clearAll();
                 break;
 
         }
@@ -438,10 +529,96 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
 
     @Override
     public void onClick(View v) {
-        if (v == btnClear) {
-            setSpinnerAdapter(spMovementType, movementList);
-            clearDataView();
+        if (v == btnCancel) {
+            clearAll();
+//            setSpinnerAdapter(spMovementType, movementList);
+//            clearDataView();
+//            barcodeList.clear();
         }
+        if (v == btnSubmit) {
+            barcodeList = removeDuplicateItemFromList(barcodeList);
+            if ((barcodeList.size() > 0) || !(barcodeList.isEmpty())) {
+                if (Utils.isOnline(getContext())) {
+                    callSubmitData();
+                } else {
+                    Utils.showNetworkAlert(getContext());
+                }
+            } else {
+                Toast.makeText(getContext(), getResources().getString(R.string.please_scan_barcode), Toast.LENGTH_LONG).show();
+            }
+
+        }
+    }
+
+    private void callSubmitData() {
+        pd.setTitle("Loading...");
+        pd.show();
+        String requestBodyText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<ns0:MT_MTP_Submit_snd xmlns:ns0=\"http://MTP_Submit\">\n" +
+                "<scan_barc>\n";
+
+        for (String barCode : barcodeList) {
+            String itemConcat = "<item>\n" +
+                    "  <barcode>" + barCode + "</barcode>\n" +
+                    "</item>\n";
+            requestBodyText = requestBodyText + itemConcat;
+        }
+
+        String finalConct = "</scan_barc>\n" +
+                "<bwart>" + spMovementType.getSelectedItem().toString() + "</bwart>\n" +
+                "<lgort_f>" + spFromLocation.getSelectedItem().toString() + "</lgort_f>\n" +
+                "<lgort_t>" + spToLocation.getSelectedItem().toString() + "</lgort_t>\n" +
+                "<matnr>" + tvMaterial.getText().toString().trim() + "</matnr>\n" +
+                "<scanq>" + tvTotalScannedQty.getText().toString().trim() + "</scanq>\n" +
+                "<uname>" + strUserName.toUpperCase() + "</uname>\n" +
+                "<werks>" + strPlant + "</werks>\n" +
+                "</ns0:MT_MTP_Submit_snd>";
+
+        requestBodyText = requestBodyText + finalConct;
+        System.out.println("List::: " + requestBodyText);
+
+        RequestBody requestBody = RequestBody.create(requestBodyText, MediaType.parse("text/xml"));
+        Call<MTMTPSubmitRec> call = RetrofitClient
+                .getInstance()
+                .getApi()
+                .getMTPSubmit(requestBody, Utils.getAuthToken());
+
+        call.enqueue(new Callback<MTMTPSubmitRec>() {
+            @Override
+            public void onResponse(Call<MTMTPSubmitRec> call, Response<MTMTPSubmitRec> response) {
+                if (!response.isSuccessful()) {
+                    pd.dismiss();
+                    return;
+                }
+                pd.dismiss();
+
+                if (response.body().getMTMTPSubmitRec().getSuccess().equalsIgnoreCase("E")) {
+                    Utils.showMyAlert(getContext(), "Error", response.body().getMTMTPSubmitRec().getMessage());
+                } else {
+                    Utils.showMyAlert(getContext(), "", response.body().getMTMTPSubmitRec().getMessage());
+                }
+//                Toast.makeText(getContext(), response.body().getMTMTPSubmitRec().getMessage(), Toast.LENGTH_LONG).show();
+                clearAll();
+            }
+
+            @Override
+            public void onFailure(Call<MTMTPSubmitRec> call, Throwable t) {
+                pd.dismiss();
+                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show(); // ALL NETWORK ERROR HERE
+            }
+        });
+    }
+
+    private void clearAll() {
+        clearDataView();
+
+        setSpinnerAdapter(spMovementType, movementList);
+        barcodeList.clear();
+        scannedQtyP = 0;
+        count = 0;
+        totalPalletScanCount = 0;
+        strMaterial = "";
+        strBatch = "";
 
     }
 
@@ -476,16 +653,29 @@ public class MaterialTransferPostingFragment extends Fragment implements View.On
                 case R.id.etFMTPBarcode:
                     if (text.isEmpty() || text.length() == 0 || text.equals(null)) {
                     } else {
-                        String[] separated = text.split(Pattern.quote("/"));
-                        System.out.println("LeL::L " + etBarcode.getText().toString());
-//                        if ((separated.length == 5)) {
                         if (isValidBarCode()) {
                             if (isValidMovementType()) {
                                 if (isValidFromLocation()) {
                                     if (isValidToLocation()) {
                                         if (Utils.isOnline(getContext())) {
-                                            System.out.println("LeL::s " + spMovementType.getSelectedItem().toString());
-                                            callScanData();
+                                            if (strMaterial.isEmpty() && strBatch.isEmpty()) {
+                                                callScanData();
+                                            } else {
+                                                String[] separated = text.split(Pattern.quote("/"));
+                                                String strNewMaterial = separated[0];
+                                                String strNewBatch = separated[1];
+                                                if (strNewBatch.equalsIgnoreCase(strBatch) && strNewMaterial.equalsIgnoreCase(strMaterial)) {
+                                                    callScanData();
+                                                } else if (strNewMaterial.equalsIgnoreCase(strMaterial) && !strNewBatch.equalsIgnoreCase(strBatch)) {
+                                                    etBarcode.setText("");
+                                                    Utils.showMyAlert(getContext(), "Error", "Different Batch:" + strNewBatch + " is not allow...");
+//                                                    Toast.makeText(getContext(), "Different Batch:" + strNewBatch + " is not allow...", Toast.LENGTH_LONG).show();
+                                                } else {
+                                                    etBarcode.setText("");
+                                                    Utils.showMyAlert(getContext(), "Error", "Different Material:" + strNewMaterial + " & Batch:" + strNewBatch + " are not allow...");
+//                                                    Toast.makeText(getContext(), "Different Material:" + strNewMaterial + " & Batch:" + strNewBatch + " are not allow...", Toast.LENGTH_LONG).show();
+                                                }
+                                            }
                                         } else {
                                             Utils.showNetworkAlert(getContext());
                                             etBarcode.setText("");

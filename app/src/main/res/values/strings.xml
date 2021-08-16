@@ -37,6 +37,7 @@
     <string name="btn_login">Login</string>
     <string name="btn_reset_server_detail">Reset Server Detail</string>
     <string name="btn_clear">Clear</string>
+    <string name="btn_cancel">Cancel</string>
     <string name="btn_submit">Submit</string>
     <string name="err_msg_user_id">Please enter user id.</string>
     <string name="err_msg_user_password">Please enter user password</string>
@@ -47,6 +48,7 @@
     <string name="material_staging">Material Staging</string>
     <string name="stock_view">Stock View</string>
     <string name="physical_inventory">Physical Inventory</string>
+    <string name="please_scan_barcode">Please scan barcode.</string>
     <string name="material_transfer_posting">Material Transfer Posting</string>
     <string name="logout">Logout</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>

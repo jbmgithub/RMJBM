@@ -381,13 +381,13 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/btnFMTPClear"
+                        android:id="@+id/btnFMTPCancel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_8dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_selector_reset"
-                        android:text="@string/btn_clear"
+                        android:text="@string/btn_cancel"
                         android:textColor="@color/whiteColor"
                         android:textSize="@dimen/text_16sp" />
 
